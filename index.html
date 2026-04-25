@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FEMZY LOGS 🌎 — Global Digital Marketplace</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #080b10;
+    --surface: #0d1117;
+    --card: #111820;
+    --border: rgba(255,255,255,0.07);
+    --accent: #00e5a0;
+    --accent2: #ffd166;
+    --accent3: #7c83fd;
+    --text: #f0f4f8;
+    --muted: #6b7a90;
+    --glow: rgba(0,229,160,0.18);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ─── NOISE OVERLAY ──────────────────────────────── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 999; opacity: 0.4;
+  }
+
+  /* ─── NAV ────────────────────────────────────────── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.1rem 5%;
+    background: rgba(8,11,16,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.35rem;
+    color: var(--text);
+    letter-spacing: -0.5px;
+    text-decoration: none;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .nav-logo span { color: var(--accent); }
+
+  .nav-links {
+    display: flex; align-items: center; gap: 2rem;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--muted); text-decoration: none;
+    font-size: 0.9rem; font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-cta {
+    background: var(--accent); color: #080b10 !important;
+    padding: 0.5rem 1.2rem; border-radius: 6px;
+    font-weight: 700 !important; font-size: 0.85rem !important;
+    transition: opacity 0.2s, transform 0.2s !important;
+  }
+  .nav-cta:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  /* ─── HERO ───────────────────────────────────────── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 8rem 5% 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* animated grid lines */
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%);
+  }
+
+  /* glowing orbs */
+  .orb {
+    position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none;
+  }
+  .orb1 { width: 500px; height: 500px; background: rgba(0,229,160,0.1); top: -100px; left: -100px; animation: drift1 12s ease-in-out infinite alternate; }
+  .orb2 { width: 400px; height: 400px; background: rgba(124,131,253,0.1); bottom: -100px; right: -50px; animation: drift2 15s ease-in-out infinite alternate; }
+  .orb3 { width: 300px; height: 300px; background: rgba(255,209,102,0.06); top: 40%; left: 60%; animation: drift1 18s ease-in-out infinite alternate-reverse; }
+
+  @keyframes drift1 { from { transform: translate(0,0); } to { transform: translate(40px, 30px); } }
+  @keyframes drift2 { from { transform: translate(0,0); } to { transform: translate(-40px, -20px); } }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(0,229,160,0.08); border: 1px solid rgba(0,229,160,0.2);
+    color: var(--accent); font-family: 'DM Mono', monospace;
+    font-size: 0.75rem; padding: 0.35rem 0.9rem; border-radius: 20px;
+    margin-bottom: 2rem; letter-spacing: 0.05em;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero-badge::before { content: '●'; font-size: 0.6rem; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.8rem, 7vw, 6rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    max-width: 560px; font-size: 1.15rem; color: var(--muted);
+    margin: 0 auto 2.5rem; line-height: 1.7;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-actions {
+    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .btn-primary {
+    background: var(--accent); color: #080b10;
+    padding: 0.85rem 2rem; border-radius: 8px;
+    font-weight: 700; font-size: 0.95rem;
+    text-decoration: none; border: none; cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 30px rgba(0,229,160,0.3);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(0,229,160,0.45); }
+
+  .btn-ghost {
+    background: transparent; color: var(--text);
+    padding: 0.85rem 2rem; border-radius: 8px;
+    font-weight: 600; font-size: 0.95rem;
+    text-decoration: none; border: 1px solid var(--border); cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .btn-ghost:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.03); }
+
+  .hero-stats {
+    display: flex; gap: 3rem; margin-top: 4.5rem; flex-wrap: wrap; justify-content: center;
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800;
+    color: var(--text); display: block;
+  }
+  .stat-label { font-size: 0.8rem; color: var(--muted); font-family: 'DM Mono', monospace; letter-spacing: 0.05em; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── TICKER ─────────────────────────────────────── */
+  .ticker-wrap {
+    overflow: hidden; background: rgba(0,229,160,0.05);
+    border-top: 1px solid rgba(0,229,160,0.15);
+    border-bottom: 1px solid rgba(0,229,160,0.15);
+    padding: 0.65rem 0;
+  }
+  .ticker {
+    display: flex; width: max-content;
+    animation: ticker 30s linear infinite;
+  }
+  .ticker-item {
+    white-space: nowrap; padding: 0 3rem;
+    font-family: 'DM Mono', monospace; font-size: 0.75rem;
+    color: var(--accent); letter-spacing: 0.08em;
+    opacity: 0.7;
+  }
+  .ticker-item::before { content: '✦  '; }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ─── SECTIONS ───────────────────────────────────── */
+  section { padding: 6rem 5%; }
+
+  .section-tag {
+    font-family: 'DM Mono', monospace; font-size: 0.72rem;
+    color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase;
+    margin-bottom: 0.75rem; display: block;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    letter-spacing: -1px; line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+  .section-sub { color: var(--muted); max-width: 500px; font-size: 1rem; line-height: 1.7; }
+
+  /* ─── FEATURES ───────────────────────────────────── */
+  #features { background: var(--surface); }
+
+  .features-header { margin-bottom: 3.5rem; }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 1.5px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+  }
+
+  .feature-card {
+    background: var(--card); padding: 2rem;
+    transition: background 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .feature-card::before {
+    content: ''; position: absolute;
+    width: 150px; height: 150px; border-radius: 50%;
+    background: var(--glow); filter: blur(40px);
+    top: -50px; right: -50px; opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-card:hover { background: #141c26; }
+
+  .feature-icon {
+    font-size: 1.8rem; margin-bottom: 1rem;
+    display: block;
+  }
+  .feature-card h3 {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem;
+    margin-bottom: 0.5rem; letter-spacing: -0.3px;
+  }
+  .feature-card p { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+
+  /* ─── HOW IT WORKS ───────────────────────────────── */
+  #how-it-works { max-width: 900px; margin: 0 auto; }
+
+  .steps { margin-top: 3rem; display: flex; flex-direction: column; gap: 0; }
+  .step {
+    display: grid; grid-template-columns: 60px 1fr;
+    gap: 0 2rem; position: relative;
+  }
+  .step:not(:last-child) .step-line {
+    position: absolute; left: 29px; top: 52px; bottom: 0; width: 2px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    opacity: 0.2;
+  }
+
+  .step-num {
+    width: 60px; height: 60px; border-radius: 50%;
+    border: 1px solid rgba(0,229,160,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace; font-size: 0.9rem; font-weight: 500;
+    color: var(--accent); flex-shrink: 0; background: rgba(0,229,160,0.05);
+    position: relative; z-index: 1;
+  }
+
+  .step-content { padding-bottom: 3rem; }
+  .step-content h3 {
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: 1.15rem; margin-bottom: 0.4rem; padding-top: 1rem;
+  }
+  .step-content p { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+
+  /* ─── API SECTION ────────────────────────────────── */
+  #api { background: var(--surface); }
+
+  .api-inner {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 4rem; align-items: center;
+    max-width: 1100px; margin: 0 auto;
+  }
+
+  .code-window {
+    background: #0a0e14; border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .code-header {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.8rem 1rem; border-bottom: 1px solid var(--border);
+    background: #0d1117;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot1 { background: #ff5f57; }
+  .dot2 { background: #febc2e; }
+  .dot3 { background: #28c840; }
+  .code-title {
+    font-family: 'DM Mono', monospace; font-size: 0.7rem;
+    color: var(--muted); margin-left: 0.5rem;
+  }
+  .code-body {
+    padding: 1.5rem; font-family: 'DM Mono', monospace;
+    font-size: 0.78rem; line-height: 1.7; color: #abb2bf;
+    overflow-x: auto;
+  }
+  .c-purple { color: #c678dd; }
+  .c-green { color: var(--accent); }
+  .c-yellow { color: var(--accent2); }
+  .c-blue { color: #61afef; }
+  .c-str { color: #98c379; }
+  .c-comment { color: #5c6370; font-style: italic; }
+
+  .api-feature {
+    display: flex; gap: 1rem; margin-bottom: 1.5rem;
+    align-items: flex-start;
+  }
+  .api-feature-icon {
+    width: 38px; height: 38px; border-radius: 8px;
+    background: rgba(0,229,160,0.1); border: 1px solid rgba(0,229,160,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; flex-shrink: 0;
+  }
+  .api-feature-text h4 {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem;
+    margin-bottom: 0.2rem;
+  }
+  .api-feature-text p { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+
+  /* ─── PRICING ────────────────────────────────────── */
+  #pricing { }
+  .pricing-header { text-align: center; margin-bottom: 3.5rem; }
+  .pricing-header .section-sub { margin: 0 auto; }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem; max-width: 1000px; margin: 0 auto;
+  }
+
+  .pricing-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 2rem;
+    transition: transform 0.25s, box-shadow 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .pricing-card:hover { transform: translateY(-4px); box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
+
+  .pricing-card.featured {
+    border-color: rgba(0,229,160,0.4);
+    background: linear-gradient(135deg, #111f1a 0%, var(--card) 100%);
+  }
+  .pricing-card.featured::before {
+    content: 'POPULAR';
+    position: absolute; top: 1.2rem; right: -2rem;
+    background: var(--accent); color: #080b10;
+    font-family: 'DM Mono', monospace; font-size: 0.65rem; font-weight: 700;
+    padding: 0.2rem 3rem; transform: rotate(45deg);
+    letter-spacing: 0.1em;
+  }
+
+  .plan-name {
+    font-family: 'DM Mono', monospace; font-size: 0.72rem;
+    color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .plan-price {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: 2.5rem; letter-spacing: -1.5px; margin-bottom: 0.25rem;
+  }
+  .plan-price sup { font-size: 1rem; letter-spacing: 0; font-weight: 600; vertical-align: super; }
+  .plan-desc { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.8rem; }
+
+  .plan-features { list-style: none; margin-bottom: 2rem; }
+  .plan-features li {
+    font-size: 0.88rem; padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted); display: flex; gap: 0.6rem; align-items: center;
+  }
+  .plan-features li:last-child { border-bottom: none; }
+  .plan-features li::before { content: '✓'; color: var(--accent); font-weight: 700; flex-shrink: 0; }
+
+  /* ─── TESTIMONIALS ───────────────────────────────── */
+  #testimonials { background: var(--surface); }
+  .test-header { margin-bottom: 3.5rem; }
+
+  .test-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  .test-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.8rem;
+    transition: border-color 0.2s;
+  }
+  .test-card:hover { border-color: rgba(255,255,255,0.12); }
+  .test-quote {
+    font-size: 0.93rem; line-height: 1.7; color: var(--text);
+    margin-bottom: 1.5rem;
+  }
+  .test-author { display: flex; align-items: center; gap: 0.8rem; }
+  .test-avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; flex-shrink: 0;
+  }
+  .test-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; }
+  .test-role { font-size: 0.78rem; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+  .stars { color: var(--accent2); font-size: 0.8rem; margin-bottom: 1rem; letter-spacing: 2px; }
+
+  /* ─── CTA BANNER ─────────────────────────────────── */
+  #cta {
+    text-align: center;
+    padding: 5rem 5%;
+    position: relative; overflow: hidden;
+    background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(0,229,160,0.07) 0%, transparent 100%);
+  }
+
+  #cta h2 {
+    font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800; letter-spacing: -1.5px; max-width: 700px;
+    margin: 0 auto 1.2rem; line-height: 1.1;
+  }
+  #cta p { color: var(--muted); margin-bottom: 2.5rem; font-size: 1.05rem; }
+
+  .cta-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+  /* ─── FOOTER ─────────────────────────────────────── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 3rem 5%;
+    background: var(--surface);
+  }
+
+  .footer-inner {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem; margin-bottom: 3rem;
+  }
+
+  .footer-brand p { color: var(--muted); font-size: 0.88rem; line-height: 1.7; margin-top: 0.8rem; max-width: 280px; }
+
+  .footer-col h4 {
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: 0.85rem; margin-bottom: 1rem; letter-spacing: -0.2px;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { margin-bottom: 0.6rem; }
+  .footer-col ul li a {
+    color: var(--muted); text-decoration: none; font-size: 0.85rem;
+    transition: color 0.2s;
+  }
+  .footer-col ul li a:hover { color: var(--text); }
+
+  .footer-bottom {
+    border-top: 1px solid var(--border); padding-top: 1.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .footer-bottom p { font-size: 0.8rem; color: var(--muted); font-family: 'DM Mono', monospace; }
+  .footer-socials { display: flex; gap: 1rem; }
+  .footer-socials a {
+    width: 34px; height: 34px; border-radius: 8px;
+    border: 1px solid var(--border); color: var(--muted);
+    text-decoration: none; display: flex; align-items: center;
+    justify-content: center; font-size: 0.85rem; transition: border-color 0.2s, color 0.2s;
+  }
+  .footer-socials a:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ─── RESPONSIVE ──────────────────────────────────── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 4%; }
+    .nav-links { display: none; }
+    .api-inner { grid-template-columns: 1fr; }
+    .footer-inner { grid-template-columns: 1fr 1fr; }
+    .hero-stats { gap: 2rem; }
+  }
+  @media (max-width: 500px) {
+    .footer-inner { grid-template-columns: 1fr; }
+  }
+
+  /* ─── SCROLL REVEAL ──────────────────────────────── */
+  .reveal {
+    opacity: 0; transform: translateY(25px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">FEMZY <span>LOGS</span> 🌎</a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#api">API</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#" class="nav-cta">Get Started</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+
+  <div class="hero-badge">LIVE — Marketplace Now Open</div>
+
+  <h1>
+    The Global<br>
+    Digital <em>Marketplace</em><br>
+    Built to Scale.
+  </h1>
+  <p>FEMZY LOGS is a high-performance digital goods marketplace with instant wallet funding, real-time order tracking, and a powerful reseller API for builders.</p>
+
+  <div class="hero-actions">
+    <a href="#" class="btn-primary">Start Trading →</a>
+    <a href="#api" class="btn-ghost">Explore the API</a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <span class="stat-num">10K+</span>
+      <span class="stat-label">Active Users</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">₦500M+</span>
+      <span class="stat-label">Volume Processed</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">99.9%</span>
+      <span class="stat-label">Uptime SLA</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">&lt;2s</span>
+      <span class="stat-label">Order Delivery</span>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span class="ticker-item">Instant Wallet Funding</span>
+    <span class="ticker-item">Paystack Powered</span>
+    <span class="ticker-item">Real-Time WebSockets</span>
+    <span class="ticker-item">Reseller API</span>
+    <span class="ticker-item">NestJS Backend</span>
+    <span class="ticker-item">Global Delivery</span>
+    <span class="ticker-item">Secure Auth</span>
+    <span class="ticker-item">Multi-Role Accounts</span>
+    <span class="ticker-item">Instant Wallet Funding</span>
+    <span class="ticker-item">Paystack Powered</span>
+    <span class="ticker-item">Real-Time WebSockets</span>
+    <span class="ticker-item">Reseller API</span>
+    <span class="ticker-item">NestJS Backend</span>
+    <span class="ticker-item">Global Delivery</span>
+    <span class="ticker-item">Secure Auth</span>
+    <span class="ticker-item">Multi-Role Accounts</span>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="features-header reveal">
+    <span class="section-tag">Platform Features</span>
+    <h2 class="section-title">Everything you need to<br>buy, sell, and automate.</h2>
+    <p class="section-sub">A full-stack marketplace with real-time infrastructure built for speed and reliability.</p>
+  </div>
+
+  <div class="features-grid reveal">
+    <div class="feature-card">
+      <span class="feature-icon">💳</span>
+      <h3>Instant Wallet Funding</h3>
+      <p>Top up your account in seconds via Paystack. Automatic confirmation and real-time balance updates the moment payment clears.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">⚡</span>
+      <h3>Sub-Second Order Delivery</h3>
+      <p>Orders are processed and fulfilled in under 2 seconds. Queue-based architecture powered by Redis ensures no orders are ever dropped.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📡</span>
+      <h3>Real-Time Updates</h3>
+      <p>Live order status, wallet balance updates, and notifications over WebSockets. No page refresh ever needed.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🔑</span>
+      <h3>Reseller API Keys</h3>
+      <p>Generate API keys, automate purchases, and integrate our catalog directly into your own platform with our well-documented REST API.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🛡️</span>
+      <h3>Secure Authentication</h3>
+      <p>JWT-based auth with secure refresh token rotation. Role-based access for admins, users, and resellers — all protected end-to-end.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📊</span>
+      <h3>Admin Dashboard</h3>
+      <p>Full control over products, users, orders, and payouts. Real-time analytics, dispute management, and stock monitoring in one place.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🌍</span>
+      <h3>Global Products</h3>
+      <p>A curated catalog of digital goods available worldwide. Verified vendors, quality-checked listings, and competitive pricing.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📦</span>
+      <h3>Queue-Based Fulfillment</h3>
+      <p>Redis-powered job queues handle high-volume order spikes gracefully. Scale to thousands of concurrent orders without degradation.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🔔</span>
+      <h3>Smart Notifications</h3>
+      <p>Customizable email and in-app alerts for every order event, funding confirmation, and account activity.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works">
+  <div class="reveal">
+    <span class="section-tag">Getting Started</span>
+    <h2 class="section-title">From sign-up to first<br>order in minutes.</h2>
+  </div>
+
+  <div class="steps reveal">
+    <div class="step">
+      <div class="step-line"></div>
+      <div class="step-num">01</div>
+      <div class="step-content">
+        <h3>Create Your Account</h3>
+        <p>Sign up with your email in under 60 seconds. Choose between a buyer, reseller, or vendor account type based on how you plan to use the platform.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-line"></div>
+      <div class="step-num">02</div>
+      <div class="step-content">
+        <h3>Fund Your Wallet</h3>
+        <p>Add credit via Paystack using card, bank transfer, or USSD. Funds reflect instantly in your wallet with a full transaction receipt.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-line"></div>
+      <div class="step-num">03</div>
+      <div class="step-content">
+        <h3>Browse & Place Orders</h3>
+        <p>Browse the marketplace catalog, select your product, review pricing, and place your order. Confirmation and delivery happen in real-time via WebSocket.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-line"></div>
+      <div class="step-num">04</div>
+      <div class="step-content">
+        <h3>Automate with the API (Resellers)</h3>
+        <p>Generate your API key from the dashboard, read the docs, and start automating orders from your own scripts or storefronts. We handle fulfillment — you handle growth.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- API SECTION -->
+<section id="api">
+  <div class="api-inner">
+    <div class="reveal">
+      <span class="section-tag">Reseller API</span>
+      <h2 class="section-title">Integrate once.<br>Sell everywhere.</h2>
+      <p class="section-sub" style="margin-bottom:2.5rem;">Our REST API lets you automate order placement, check balances, and manage products programmatically. Perfect for building your own storefront on top of FEMZY LOGS.</p>
+
+      <div class="api-feature">
+        <div class="api-feature-icon">🗝️</div>
+        <div class="api-feature-text">
+          <h4>API Key Authentication</h4>
+          <p>One key per account. Regenerate anytime from the dashboard with instant invalidation.</p>
+        </div>
+      </div>
+      <div class="api-feature">
+        <div class="api-feature-icon">📋</div>
+        <div class="api-feature-text">
+          <h4>Full Product Catalog Access</h4>
+          <p>Query all products, check availability, and get live pricing via a single endpoint.</p>
+        </div>
+      </div>
+      <div class="api-feature">
+        <div class="api-feature-icon">🚀</div>
+        <div class="api-feature-text">
+          <h4>Programmatic Orders</h4>
+          <p>POST an order via script and receive fulfillment data in the response. No UI required.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-window reveal">
+      <div class="code-header">
+        <div class="dot dot1"></div>
+        <div class="dot dot2"></div>
+        <div class="dot dot3"></div>
+        <span class="code-title">place_order.js — FEMZY LOGS API</span>
+      </div>
+      <div class="code-body">
+        <span class="c-comment">// Place an order via the Reseller API</span><br>
+        <br>
+        <span class="c-purple">const</span> <span class="c-blue">response</span> <span class="c-green">=</span> <span class="c-purple">await</span> fetch(<br>
+        &nbsp;&nbsp;<span class="c-str">"https://api.femzylogs.com/v1/orders"</span>,<br>
+        &nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="c-yellow">method</span>: <span class="c-str">"POST"</span>,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="c-yellow">headers</span>: {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-str">"X-API-Key"</span>: <span class="c-blue">process.env</span>.<span class="c-green">FEMZY_API_KEY</span>,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-str">"Content-Type"</span>: <span class="c-str">"application/json"</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;},<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="c-yellow">body</span>: <span class="c-blue">JSON</span>.stringify({<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-yellow">product_id</span>: <span class="c-str">"prod_xyz123"</span>,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-yellow">quantity</span>: <span class="c-green">5</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;})<br>
+        &nbsp;&nbsp;}<br>
+        );<br>
+        <br>
+        <span class="c-purple">const</span> { <span class="c-blue">order_id</span>, <span class="c-blue">status</span>, <span class="c-blue">items</span> } <span class="c-green">=</span> <span class="c-purple">await</span> <span class="c-blue">response</span>.json();<br>
+        <br>
+        <span class="c-blue">console</span>.log(<span class="c-str">`✅ Order </span><span class="c-purple">${</span><span class="c-blue">order_id</span><span class="c-purple">}</span><span class="c-str"> — </span><span class="c-purple">${</span><span class="c-blue">status</span><span class="c-purple">}</span><span class="c-str">`</span>);
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="pricing-header reveal">
+    <span class="section-tag">Pricing</span>
+    <h2 class="section-title">Simple, transparent tiers.</h2>
+    <p class="section-sub">No hidden fees. Pay only for what you buy. All tiers include wallet access and real-time order tracking.</p>
+  </div>
+
+  <div class="pricing-grid">
+    <div class="pricing-card reveal">
+      <p class="plan-name">Buyer</p>
+      <div class="plan-price">Free</div>
+      <p class="plan-desc">For individuals purchasing digital goods for personal use.</p>
+      <ul class="plan-features">
+        <li>Wallet funding via Paystack</li>
+        <li>Full product catalog access</li>
+        <li>Real-time order tracking</li>
+        <li>Email notifications</li>
+        <li>Transaction history</li>
+      </ul>
+      <a href="#" class="btn-ghost" style="display:block;text-align:center;">Create Account</a>
+    </div>
+
+    <div class="pricing-card featured reveal">
+      <p class="plan-name">Reseller</p>
+      <div class="plan-price"><sup>₦</sup>5,000<span style="font-size:1rem;font-weight:400;letter-spacing:0;">/mo</span></div>
+      <p class="plan-desc">For builders who automate orders and run their own stores.</p>
+      <ul class="plan-features">
+        <li>Everything in Buyer</li>
+        <li>API key generation</li>
+        <li>Programmatic order placement</li>
+        <li>Webhooks for order events</li>
+        <li>Dedicated reseller pricing</li>
+        <li>Priority support</li>
+      </ul>
+      <a href="#" class="btn-primary" style="display:block;text-align:center;">Start Reselling</a>
+    </div>
+
+    <div class="pricing-card reveal">
+      <p class="plan-name">Vendor</p>
+      <div class="plan-price">Custom</div>
+      <p class="plan-desc">For suppliers who want to list and sell products on FEMZY LOGS.</p>
+      <ul class="plan-features">
+        <li>Everything in Reseller</li>
+        <li>Product listing dashboard</li>
+        <li>Earnings & payout tracking</li>
+        <li>Bulk product import</li>
+        <li>Custom commission rates</li>
+        <li>Account manager</li>
+      </ul>
+      <a href="#" class="btn-ghost" style="display:block;text-align:center;">Contact Sales</a>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="test-header reveal">
+    <span class="section-tag">Testimonials</span>
+    <h2 class="section-title">Trusted by traders<br>across the globe.</h2>
+  </div>
+
+  <div class="test-grid">
+    <div class="test-card reveal">
+      <div class="stars">★★★★★</div>
+      <p class="test-quote">"FEMZY LOGS is the fastest marketplace I've used. Orders come through in literally seconds and the wallet system is seamless. My go-to platform."</p>
+      <div class="test-author">
+        <div class="test-avatar" style="background:rgba(0,229,160,0.1);">👤</div>
+        <div>
+          <div class="test-name">Chukwuemeka O.</div>
+          <div class="test-role">Reseller, Lagos</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="test-card reveal">
+      <div class="stars">★★★★★</div>
+      <p class="test-quote">"I built my entire storefront using the FEMZY API. Documentation is clean, the API is stable, and their team responds fast. Genuinely impressive platform."</p>
+      <div class="test-author">
+        <div class="test-avatar" style="background:rgba(124,131,253,0.1);">👤</div>
+        <div>
+          <div class="test-name">Tunde A.</div>
+          <div class="test-role">Developer & Vendor</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="test-card reveal">
+      <div class="stars">★★★★★</div>
+      <p class="test-quote">"Running a digital goods business used to mean juggling five different tools. Now it's all in one place. The real-time updates alone save me hours every week."</p>
+      <div class="test-author">
+        <div class="test-avatar" style="background:rgba(255,209,102,0.1);">👤</div>
+        <div>
+          <div class="test-name">Adaeze N.</div>
+          <div class="test-role">Bulk Buyer, Abuja</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section id="cta">
+  <h2 class="reveal">Ready to start trading<br>on FEMZY LOGS?</h2>
+  <p class="reveal">Join thousands of buyers, resellers, and vendors already on the platform.</p>
+  <div class="cta-actions reveal">
+    <a href="#" class="btn-primary">Create Free Account →</a>
+    <a href="#api" class="btn-ghost">View API Docs</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo" style="font-size:1.2rem;">FEMZY <span>LOGS</span> 🌎</a>
+      <p>A high-performance digital marketplace for buyers, resellers, and vendors. Built on NestJS, Next.js, and real-time infrastructure.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <ul>
+        <li><a href="#">Marketplace</a></li>
+        <li><a href="#">Fund Wallet</a></li>
+        <li><a href="#">My Orders</a></li>
+        <li><a href="#">API Keys</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Developers</h4>
+      <ul>
+        <li><a href="#">API Docs</a></li>
+        <li><a href="#">Webhooks</a></li>
+        <li><a href="#">Status Page</a></li>
+        <li><a href="#">Changelog</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 FEMZY LOGS. All rights reserved. Powered by Paystack & Redis.</p>
+    <div class="footer-socials">
+      <a href="#" title="Twitter">𝕏</a>
+      <a href="#" title="Telegram">✈</a>
+      <a href="#" title="WhatsApp">💬</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Stagger children in grids
+  document.querySelectorAll('.features-grid, .test-grid, .pricing-grid').forEach(grid => {
+    [...grid.children].forEach((child, i) => {
+      child.style.transitionDelay = `${i * 0.07}s`;
+    });
+  });
+</script>
+
+</body>
+</html>
